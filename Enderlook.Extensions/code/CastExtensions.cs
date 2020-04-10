@@ -14,8 +14,8 @@ namespace Enderlook.Extensions
         /// <typeparam name="T">Type of the value to cast.</typeparam>
         /// <param name="obj"><see cref="object"/> to cast.</param>
         /// <param name="result">Casted result.</param>
-        /// <returns><see langword="true"/> if the cast was successful. <see langword="false"> if it wasn't able to cast.</returns>
-        /// <seealso href="https://codereview.stackexchange.com/questions/17982/trycastt-method">Source.</see>
+        /// <returns><see langword="true"/> if the cast was successful. <see langword="false"/> if it wasn't able to cast.</returns>
+        /// <seealso url="https://codereview.stackexchange.com/questions/17982/trycastt-method"/>
         /// <seealso cref="CastOrDefault{T}(object)"/>
         /// <seealso cref="CastOrNull{T}(object, RequireStruct{T})"/>
         /// <seealso cref="CastOrNull{T}(object, RequireClass{T})"/>
@@ -35,7 +35,7 @@ namespace Enderlook.Extensions
         /// </summary>
         /// <typeparam name="T">Type of the value to cast.</typeparam>
         /// <param name="obj"><see cref="object"/> to cast.</param>
-        /// <returns>Return <c>(<typeparamref name="T"/>)<paramref name="obj"/></c>. <c>default(<typeparamref name="T"/>)<c> if it can't cast.</returns>
+        /// <returns>Return <c>(<typeparamref name="T"/>)<paramref name="obj"/></c>. <c>default(<typeparamref name="T"/>)</c> if it can't cast.</returns>
         public static T CastOrDefault<T>(this object obj) => obj is T ? (T)obj : (default);
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace Enderlook.Extensions
         /// <param name="from">The type to cast from.</param>
         /// <param name="to">The type to be casted to.</param>
         /// <returns><see langword="true"/> if <paramref name="from"/> can be casted to <paramref name="to"/>. <see langword="false"/> otherwise.</returns>
-        /// <see cref="https://stackoverflow.com/questions/18256742/c-sharp-is-operator-check-castability-for-all-conversions-available"/>
+        /// <seealso url="https://stackoverflow.com/questions/18256742/c-sharp-is-operator-check-castability-for-all-conversions-available"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="from"/> or <paramref name="to"/> are <see langword="null"/></exception>
         public static bool IsCastableTo(this Type from, Type to)
         {
@@ -136,9 +136,8 @@ namespace Enderlook.Extensions
         /// <typeparam name="T">The type to be casted to.</typeparam>
         /// <param name="from">The type to cast from.</param>
         /// <returns><see langword="true"/> if <paramref name="from"/> can be casted to <typeparamref name="T"/>. <see langword="false"/> otherwise.</returns>
-        /// <see cref="https://stackoverflow.com/questions/18256742/c-sharp-is-operator-check-castability-for-all-conversions-available"/>
+        /// <seealso url="https://stackoverflow.com/questions/18256742/c-sharp-is-operator-check-castability-for-all-conversions-available"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="from"/> is <see langword="null"/></exception>
-
         public static bool IsCastableTo<T>(this Type from) => from.IsCastableTo(typeof(T));
 
         /// <summary>
@@ -147,8 +146,8 @@ namespace Enderlook.Extensions
         /// </summary>
         /// <typeparam name="T">The type to cast from.</typeparam>
         /// <typeparam name="U">The type to be casted to.</typeparam>
-        /// <returns><see langword="true"/> if <paramref name="from"/> can be casted to <typeparamref name="T"/>. <see langword="false"/> otherwise.</returns>
-        /// <see cref="https://stackoverflow.com/questions/18256742/c-sharp-is-operator-check-castability-for-all-conversions-available"/>
+        /// <returns><see langword="true"/> if <typeparamref name="U"/> can be casted to <typeparamref name="T"/>. <see langword="false"/> otherwise.</returns>
+        /// <seealso url="https://stackoverflow.com/questions/18256742/c-sharp-is-operator-check-castability-for-all-conversions-available"/>
         public static bool IsCastableTo<T, U>() => typeof(T).IsCastableTo(typeof(U));
     }
 }
