@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Enderlook.Extensions.code.Linq
+namespace Enderlook.Utils.Extensions.code.Linq
 {
     /// <summary>
     /// Helper extensions for <see cref="IEnumerable{T}"/> related to transposition.
     /// </summary>
-    public static class Transposer
+    public static class TransposeExtensions
     {
         private const string ALL_ARRAYS_MUST_HAVE_SAME_LENGTH = "This array an all its elements must have the same length.";
 

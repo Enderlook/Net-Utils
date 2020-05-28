@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Enderlook.Extensions
+namespace Enderlook.Utils.Extensions
 {
     /// <summary>
     /// Extension methods for <see cref="Enum"/>.

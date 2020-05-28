@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Enderlook.Extensions
+namespace Enderlook.Utils.Extensions
 {
     /// <summary>
     /// Extension methods for casting.
