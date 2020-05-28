@@ -5,24 +5,44 @@ namespace Enderlook.Utils
 {
     // https://stackoverflow.com/questions/716552/can-you-create-a-simple-equalitycomparert-using-a-lambda-expression
 
+    /// <summary>
+    /// Helper class to create <see cref="IEqualityComparer{T}"/> based on a <see cref="Func{T, TResult}"/>.
+    /// </summary>
     public static class CustomEqualityComparer
     {
-        public static IEqualityComparer<TSource> Create<TSource, TKey>(Func<TSource, TKey> getter) => new CustomComparer<TSource, TKey>(getter);
-
-        public static IEqualityComparer<TSource> Create<TSource, TKey>(Func<TSource, TKey> getter, IEqualityComparer<TKey> comparer) => new CustomComparer<TSource, TKey>(getter, comparer);
+        /// <summary>
+        /// Creates a custom <see cref="IEqualityComparer{T}"/>.
+        /// </summary>
+        /// <typeparam name="TSource">Type of element to compare.</typeparam>
+        /// <typeparam name="TKey">Type of element of projector.</typeparam>
+        /// <param name="projector">Project the value that will be compared using the default comparers of that <typeparamref name="TKey"/>.</param>
+        /// <returns><see cref="IEqualityComparer{T}"/> for <typeparamref name="TSource"/> type.</returns>
+        public static IEqualityComparer<TSource> Create<TSource, TKey>(Func<TSource, TKey> projector)
+            => new CustomComparer<TSource, TKey>(projector);
+        
+        /// <summary>
+        /// Creates a custom <see cref="IEqualityComparer{T}"/>.
+        /// </summary>
+        /// <typeparam name="TSource">Type of element to compare.</typeparam>
+        /// <typeparam name="TKey">Type of element of projector.</typeparam>
+        /// <param name="projector">Project the value that will be compared using the default comparers of that <typeparamref name="TKey"/>.</param>
+        /// <param name="comparer">Comparer used to compare the value returned by the <paramref name="projector"/>.</param>
+        /// <returns><see cref="IEqualityComparer{T}"/> for <typeparamref name="TSource"/> type.</returns>
+        public static IEqualityComparer<TSource> Create<TSource, TKey>(Func<TSource, TKey> projector, IEqualityComparer<TKey> comparer)
+            => new CustomComparer<TSource, TKey>(projector, comparer);
 
         private class CustomComparer<TSource, TKey> : IEqualityComparer<TSource>
         {
-            private readonly Func<TSource, TKey> getter;
+            private readonly Func<TSource, TKey> projector;
             private readonly IEqualityComparer<TKey> comparer;
 
-            public CustomComparer(Func<TSource, TKey> getter) : this(getter, null) { }
+            public CustomComparer(Func<TSource, TKey> projector) : this(projector, null) { }
 
-            public CustomComparer(Func<TSource, TKey> getter, IEqualityComparer<TKey> comparer)
+            public CustomComparer(Func<TSource, TKey> projector, IEqualityComparer<TKey> comparer)
             {
-                if (getter is null) throw new ArgumentNullException(nameof(getter));
+                if (projector is null) throw new ArgumentNullException(nameof(projector));
                 this.comparer = comparer ?? EqualityComparer<TKey>.Default;
-                this.getter = getter;
+                this.projector = projector;
             }
 
             public bool Equals(TSource x, TSource y)
@@ -31,14 +51,14 @@ namespace Enderlook.Utils
                     return true;
                 if (x == null || y == null)
                     return false;
-                return comparer.Equals(getter(x), getter(y));
+                return comparer.Equals(projector(x), projector(y));
             }
 
             public int GetHashCode(TSource obj)
             {
                 // Don't use is pattern because it won't work with Unity3D
                 if (obj == null) throw new ArgumentNullException(nameof(obj));
-                return comparer.GetHashCode(getter(obj));
+                return comparer.GetHashCode(projector(obj));
             }
         }
     }

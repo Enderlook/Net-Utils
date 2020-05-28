@@ -6,6 +6,9 @@ using System.Runtime.CompilerServices;
 
 namespace Enderlook.Extensions
 {
+    /// <summary>
+    /// Extension methods for casting.
+    /// </summary>
     public static class CastExtensions
     {
         /// <summary>
@@ -22,9 +25,9 @@ namespace Enderlook.Extensions
         /// <seealso cref="CastOrNull{T}(object, RequireClass{T})"/>
         public static bool TryCast<T>(this object obj, out T result)
         {
-            if (obj is T)
+            if (obj is T t)
             {
-                result = (T)obj;
+                result = t;
                 return true;
             }
             result = default;
@@ -38,7 +41,7 @@ namespace Enderlook.Extensions
         /// <param name="obj"><see cref="object"/> to cast.</param>
         /// <returns>Return <c>(<typeparamref name="T"/>)<paramref name="obj"/></c>. <c>default(<typeparamref name="T"/>)</c> if it can't cast.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T CastOrDefault<T>(this object obj) => obj is T ? (T)obj : (default);
+        public static T CastOrDefault<T>(this object obj)=> obj is T t ? t : default;
 
         /// <summary>
         /// Don't use me.
@@ -67,7 +70,8 @@ namespace Enderlook.Extensions
         /// <seealso cref="CastOrNull{T}(object, RequireClass{T})"/>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required in order to make the overload.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T? CastOrNull<T>(this object obj, RequireStruct<T> ignoreMe = null) where T : struct => obj is T ? (T?)(T)obj : null;
+        public static T? CastOrNull<T>(this object obj, RequireStruct<T> ignoreMe = null) where T : struct
+            => obj is T t ? (T?)t : null;
 
         /// <summary>
         /// Try to cast <paramref name="obj"/> into <typeparamref name="T"/>.
@@ -82,9 +86,10 @@ namespace Enderlook.Extensions
         /// <seealso cref="CastOrNull{T}(object, RequireStruct{T})"/>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Required in order to make the overload.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T CastOrNull<T>(this object obj, RequireClass<T> ignoreMe = null) where T : class => obj is T ? (T)obj : null;
+        public static T CastOrNull<T>(this object obj, RequireClass<T> ignoreMe = null) where T : class
+            => obj is T t ? t : null;
 
-        private static readonly Dictionary<Type, IEnumerable<Type>> PrimitiveTypeTable = new Dictionary<Type, IEnumerable<Type>>
+        private static readonly Dictionary<Type, Type[]> PrimitiveTypeTable = new Dictionary<Type, Type[]>
         {
             { typeof(decimal), new[] { typeof(long), typeof(ulong) } },
             { typeof(double), new[] { typeof(float) } },
@@ -106,7 +111,10 @@ namespace Enderlook.Extensions
             while (keyTypes.Count > 0)
             {
                 Type key = keyTypes.Dequeue();
-                if (key == fromType) return true; if (PrimitiveTypeTable.ContainsKey(key)) PrimitiveTypeTable[key].ToList().ForEach(keyTypes.Enqueue);
+                if (key == fromType)
+                    return true;
+                if (PrimitiveTypeTable.ContainsKey(key))
+                    Array.ForEach(PrimitiveTypeTable[key], keyTypes.Enqueue);
             }
             return false;
         }
@@ -118,19 +126,18 @@ namespace Enderlook.Extensions
         /// <param name="from">The type to cast from.</param>
         /// <param name="to">The type to be casted to.</param>
         /// <returns><see langword="true"/> if <paramref name="from"/> can be casted to <paramref name="to"/>. <see langword="false"/> otherwise.</returns>
-        /// <seealso url="https://stackoverflow.com/questions/18256742/c-sharp-is-operator-check-castability-for-all-conversions-available"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="from"/> or <paramref name="to"/> are <see langword="null"/></exception>
         public static bool IsCastableTo(this Type from, Type to)
         {
-            if (from == null)
-                throw new ArgumentNullException(nameof(from));
-            if (to == null)
-                throw new ArgumentNullException(nameof(to));
+            // https://stackoverflow.com/questions/18256742/c-sharp-is-operator-check-castability-for-all-conversions-available
+
+            if (from == null) throw new ArgumentNullException(nameof(from));
+            if (to == null) throw new ArgumentNullException(nameof(to));
 
             return to.IsAssignableFrom(from)
                 || from.IsPrimitiveCastableTo(to)
                 || from.GetMethods(BindingFlags.Public | BindingFlags.Static)
-                    .Any(m => m.ReturnType == to && m.Name == "op_Implicit" || m.Name == "op_Explicit");
+                    .Any(m => (m.ReturnType == to && m.Name == "op_Implicit") || m.Name == "op_Explicit");
         }
 
         /// <summary>
@@ -140,10 +147,13 @@ namespace Enderlook.Extensions
         /// <typeparam name="T">The type to be casted to.</typeparam>
         /// <param name="from">The type to cast from.</param>
         /// <returns><see langword="true"/> if <paramref name="from"/> can be casted to <typeparamref name="T"/>. <see langword="false"/> otherwise.</returns>
-        /// <seealso url="https://stackoverflow.com/questions/18256742/c-sharp-is-operator-check-castability-for-all-conversions-available"/>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="from"/> is <see langword="null"/></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsCastableTo<T>(this Type from) => from.IsCastableTo(typeof(T));
+        public static bool IsCastableTo<T>(this Type from)
+        {
+            if (from == null) throw new ArgumentNullException(nameof(from));
+            return from.IsCastableTo(typeof(T));
+        }
 
         /// <summary>
         /// Determines if <typeparamref name="T"/> is castable to <typeparamref name="U"/>.
@@ -152,7 +162,6 @@ namespace Enderlook.Extensions
         /// <typeparam name="T">The type to cast from.</typeparam>
         /// <typeparam name="U">The type to be casted to.</typeparam>
         /// <returns><see langword="true"/> if <typeparamref name="U"/> can be casted to <typeparamref name="T"/>. <see langword="false"/> otherwise.</returns>
-        /// <seealso url="https://stackoverflow.com/questions/18256742/c-sharp-is-operator-check-castability-for-all-conversions-available"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsCastableTo<T, U>() => typeof(T).IsCastableTo(typeof(U));
     }

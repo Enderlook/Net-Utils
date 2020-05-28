@@ -132,7 +132,7 @@ namespace Enderlook.Utils
         /// <param name="str">First <see cref="string"/>s to search for common suffix.</param>
         /// <param name="strings"><see cref="string"/>s to search for common suffix.</param>
         /// <returns>Common suffix of all <paramref name="strings"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="strings"/> or <paramref name="str"/> are <see langword="null"/>.</exception
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="strings"/> or <paramref name="str"/> are <see langword="null"/>.</exception>
         public static string GetCommonSuffix(string str, params string[] strings)
         {
             // TODO: this can be improved
