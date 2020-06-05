@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Enderlook.Utils.Extensions.code.Linq
+namespace Enderlook.Utils.code.Linq
 {
     /// <summary>
     /// Helper extensions for <see cref="IEnumerable{T}"/> related to transposition.

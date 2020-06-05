@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Enderlook.Utils.Extensions
+namespace Enderlook.Utils
 {
     /// <summary>
     /// An extension class for <see cref="Random"/>.
