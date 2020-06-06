@@ -19,7 +19,7 @@ namespace Enderlook.Utils
         /// <returns><see cref="IEqualityComparer{T}"/> for <typeparamref name="TSource"/> type.</returns>
         public static IEqualityComparer<TSource> Create<TSource, TKey>(Func<TSource, TKey> projector)
             => new CustomComparer<TSource, TKey>(projector);
-        
+
         /// <summary>
         /// Creates a custom <see cref="IEqualityComparer{T}"/>.
         /// </summary>

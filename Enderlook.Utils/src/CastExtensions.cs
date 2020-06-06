@@ -41,7 +41,7 @@ namespace Enderlook.Utils
         /// <param name="obj"><see cref="object"/> to cast.</param>
         /// <returns>Return <c>(<typeparamref name="T"/>)<paramref name="obj"/></c>. <c>default(<typeparamref name="T"/>)</c> if it can't cast.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T CastOrDefault<T>(this object obj)=> obj is T t ? t : default;
+        public static T CastOrDefault<T>(this object obj) => obj is T t ? t : default;
 
         /// <summary>
         /// Don't use me.
